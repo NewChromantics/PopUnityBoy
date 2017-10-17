@@ -19,6 +19,8 @@ namespace GarboDev
         private Memory memory = null;
         private VideoManager videoManager = null;
         private SoundManager soundManager = null;
+		System.Func<float>	GetTimeSecs;
+		System.Action		ResetTimeSecs;
 
         private bool skipBios = true;
         private bool limitFps = true;
@@ -106,9 +108,12 @@ namespace GarboDev
             get { return this.halted; }
         }
 
-        public GbaManager(Memory memory)
+		public GbaManager(Memory memory,System.Func<float> GetTimeSecs,System.Action ResetTimeSecs)
         {
-            this.framesRendered = 0;
+			this.GetTimeSecs = GetTimeSecs;
+			this.ResetTimeSecs = ResetTimeSecs;
+
+			this.framesRendered = 0;
             this.Halt();
 			this.memory = memory;
         }
@@ -128,7 +133,7 @@ namespace GarboDev
             this.halted = false;
 
             this.iterations = 0;
-            this.timer.Start();
+			ResetTimeSecs ();
         }
 
         public void Reset()
@@ -247,12 +252,11 @@ namespace GarboDev
             }
         }
 
-        private HighPerformanceTimer timer = new HighPerformanceTimer();
-        private double iterations;
+	    private double iterations;
 
         public double SecondsSinceStarted
         {
-            get { return this.timer.ElapsedSeconds; }
+			get { return GetTimeSecs (); }
         }
 
 
@@ -274,7 +278,7 @@ namespace GarboDev
 
 
 			this.iterations = 0;
-			this.timer.Start ();
+			this.ResetTimeSecs ();
 
 			vramCycles = 0;
 			inHblank = false;
