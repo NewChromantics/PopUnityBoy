@@ -31,6 +31,12 @@ public class GameboyManager : MonoBehaviour {
 	public int				PixelCountClip = 160*240;
 
 
+	//	renderer stuff
+	public UnityEvent_Texture	OnPaletteTextureUpdated;
+	Texture2D					PaletteTexture;
+
+
+
 	void Start ()
 	{
 		if ( FrameTarget != null )
@@ -144,6 +150,7 @@ public class GameboyManager : MonoBehaviour {
 		
 
 
+
 	void Update () 
 	{
 		GbaManager.EmulatorIteration ();
@@ -170,5 +177,25 @@ public class GameboyManager : MonoBehaviour {
 			Graphics.Blit (Frame2D, FrameTarget);
 
 		OnTextureUpdated.Invoke (Frame2D);
+
+		UpdatePaletteTexture ();
+	}
+
+
+	void UpdatePaletteTexture()
+	{
+		var BytesPerColour = 2;
+		var PaletteComponents = this.Memory.PaletteRam;
+		var PaletteColourCount = PaletteComponents.Length / BytesPerColour;
+
+		if (PaletteTexture == null || PaletteTexture.width != PaletteColourCount)
+			PaletteTexture = null;
+		if (PaletteTexture == null) {
+			PaletteTexture = new Texture2D (PaletteColourCount, 1, TextureFormat.RG16, false);
+			PaletteTexture.filterMode = FilterMode.Point;
+		}
+		PaletteTexture.LoadRawTextureData (PaletteComponents);
+		PaletteTexture.Apply ();
+		OnPaletteTextureUpdated.Invoke(PaletteTexture);
 	}
 }
