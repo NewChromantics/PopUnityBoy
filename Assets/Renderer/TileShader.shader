@@ -3,8 +3,16 @@
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
-		VRamTexture("VRamTexture", 2D ) = "black" {}
-		PaletteTexture("PaletteTexture", 2D ) = "black" {}
+		CharacterPage("CharacterPage", Range(0,4) ) = 0
+		TileOffset("TileOffset", Range(0,1023) ) = 0
+		TileDisplayWidth("TileDisplayWidth", Range(0,64) ) = 64
+		TileDisplayHeight("TileDisplayHeight", Range(0,64) ) = 64
+
+		PaletteRedStart("PaletteRedStart", Range(0,15) ) = 0
+		PaletteGreenStart("PaletteGreenStart", Range(0,15) ) = 5
+		PaletteBlueStart("PaletteBlueStart", Range(0,15) ) = 10
+		PaletteEndianSwap("PaletteEndianSwap", Range(0,1) ) = 0
+
 	}
 	SubShader
 	{
@@ -36,55 +44,81 @@
 			float4 _MainTex_ST;
 			float4 _MainTex_TexelSize;
 
-
+			int CharacterPage;
+			int TileOffset;
+			int TileDisplayWidth;
+			int TileDisplayHeight;
 	
 			v2f vert (appdata v)
 			{
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
-				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+				//o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+				o.uv = v.uv;
 				return o;
 			}
 
-			bool IsBackgroundLayerEnabled(int Layer)
+			bool IsBackgroundEnabled(int Layer)
 			{
 				//	dispcont bit 8+Layer
 				return true;
 			}
 			bool IsObjectLayerEnabled()
 			{
-				return IsBackgroundLayerEnabled(4);
+				return IsBackgroundEnabled(4);
 			}
 
-			int GetBackgroundContextFromLayer(int Layer)
+			#define BG0CNT	8
+			#define BG1CNT	10
+			#define BG2CNT	12
+			#define BG2CNT	14
+			#define BGXCNT(bg)	GetIoRam16( BG0CNT + (bg*2) )
+
+			//	16 bit scroll pairs
+			#define BG0HOFS	0x10
+			#define BG0VOFS	0x12
+			#define BGXHOFS(bg)	fmod( GetIoRam16( BG0HOFS + (bg*4) ), 511 )
+			#define BGXVOFS(bg)	fmod( GetIoRam16( BG0VOFS + (bg*4) ), 511 )
+
+
+			float4 GetTileColour(int TileIndex,float2 Tileuv)
 			{
-			 	#define BG0CNT	8
-				#define BG0CNT	10
-				#define BG0CNT	12
-				#define BG0CNT	14
-				int Index = BG0CNT + Layer * 2;
-				int BgContext = GetIoRam16( Index );
-				BgContext = And3( BgContext );
-				return BgContext;
-			}
+				int Tilex = 8.0f * Tileuv.x;
+				int Tiley = 8.0f * Tileuv.y;
 
-			void GetBackgroundLayerColour(int Layer,inout float4 Colour)
-			{
-				if ( !IsBackgroundLayerEnabled(Layer) )
-					return;
 
-				int BgContext = GetBackgroundContextFromLayer( Layer );				
+				//return float4( TileIndex/2048.0f,0,0, 1);
 
-				Colour.xyz = float3(0,0,1);
+				//	this many bytes in vram 131072
+				//	2048 possible tiles
+
+				int VramIndex = TileIndex * (8*8);
+				int x = Tilex;
+				int y = Tiley;
+				VramIndex += x;
+				VramIndex += y*8;
+				int PaletteIndex = GetVRam8( VramIndex );
+				//return float4( PaletteIndex / 256.0f, 0, 0, 1);
+				//int pal = tex2D( VRamTexture, i.uv ).r * 256;
+				float4 rgba = GetPalette15Colour( PaletteIndex );
+				return float4( rgba.xyz,1 );
 			}
 
 			fixed4 frag (v2f i) : SV_Target
 			{
-				//	clear colour
-				float4 Colour = GetBgColour();
+				int RenderWidth = TileDisplayWidth;
+				int RenderHeight = TileDisplayHeight;	//	*4 per page
+				int Renderx = RenderWidth * i.uv.x;
+				int Rendery = RenderHeight * i.uv.y;
+				int RenderIndex = Renderx + (RenderWidth * Rendery);
 
-				GetBackgroundLayerColour( 0, Colour );
+				float Renderxf = RenderWidth * i.uv.x;
+				float Renderyf = RenderHeight * i.uv.y;
+				
+				float Tileu = fmod( Renderxf, 1 );
+				float Tilev = 1 - fmod( Renderyf, 1 );
 
+				float4 Colour = GetTileColour( RenderIndex+TileOffset, float2(Tileu,Tilev) );
 				return Colour;
 			}
 			ENDCG

@@ -203,12 +203,12 @@ public class GameboyManager : MonoBehaviour {
 
 	void UpdateVRamTexture()
 	{
-		UpdateTexture (ref VRamTexture, OnVRamTextureUpdated, this.Memory.VideoRam, ComponentSize.Eight);
+		UpdateTexture (ref VRamTexture, OnVRamTextureUpdated, this.Memory.VideoRam, ComponentSize.Eight, 256 );
 	}
 
 	void UpdateIoRamTexture()
 	{
-		UpdateTexture (ref IoRamTexture, OnIoRamTextureUpdated, this.Memory.IORam, ComponentSize.Eight);
+		UpdateTexture (ref IoRamTexture, OnIoRamTextureUpdated, this.Memory.IORam, ComponentSize.Eight, 32 );
 	}
 
 	static void UpdateTexture(ref Texture2D RamTexture,UnityEvent_Texture Event,byte[] Ram,ComponentSize Size,int Width=256)
@@ -226,6 +226,7 @@ public class GameboyManager : MonoBehaviour {
 			var Format = Size == ComponentSize.Eight ? TextureFormat.R8 : TextureFormat.RG16;
 			RamTexture = new Texture2D (Width, Height, Format, false);
 			RamTexture.filterMode = FilterMode.Point;
+			RamTexture.wrapMode = TextureWrapMode.Clamp;
 		}
 
 		//	gr: might need to realign these bytes

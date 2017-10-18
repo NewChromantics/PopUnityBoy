@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: TileShader
-  m_Shader: {fileID: 4800000, guid: e016809bacda34910a99c76b4afc8b7f, type: 3}
+  m_Name: BackgroundShader
+  m_Shader: {fileID: 4800000, guid: 2fa852cb6e4364ae7aea0a521cc31c50, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -18,10 +18,6 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - IoRamTexture:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - PaletteTexture:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -34,14 +30,5 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - CharacterPage: 0
-    - PaletteBlueStart: 15
-    - PaletteEndianSwap: 1
-    - PaletteGreenStart: 10
-    - PaletteRedStart: 0
-    - TileByteOffset: 0
-    - TileDisplayHeight: 31.5
-    - TileDisplayWidth: 13.9
-    - TileOffset: 860
+    m_Floats: []
     m_Colors: []
