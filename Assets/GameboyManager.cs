@@ -35,6 +35,12 @@ public class GameboyManager : MonoBehaviour {
 	public UnityEvent_Texture	OnPaletteTextureUpdated;
 	Texture2D					PaletteTexture;
 
+	public UnityEvent_Texture	OnVRamTextureUpdated;
+	Texture2D					VRamTexture;
+
+	public UnityEvent_Texture	OnIoRamTextureUpdated;
+	Texture2D					IoRamTexture;
+
 
 
 	void Start ()
@@ -179,23 +185,62 @@ public class GameboyManager : MonoBehaviour {
 		OnTextureUpdated.Invoke (Frame2D);
 
 		UpdatePaletteTexture ();
+		UpdateVRamTexture ();
+		UpdateIoRamTexture ();
 	}
 
+	enum ComponentSize
+	{
+		Eight=1,
+		Sixteen=2,
+	}
 
 	void UpdatePaletteTexture()
 	{
-		var BytesPerColour = 2;
-		var PaletteComponents = this.Memory.PaletteRam;
-		var PaletteColourCount = PaletteComponents.Length / BytesPerColour;
+		UpdateTexture (ref PaletteTexture, OnPaletteTextureUpdated, this.Memory.PaletteRam, ComponentSize.Sixteen, 512 );
+	}
 
-		if (PaletteTexture == null || PaletteTexture.width != PaletteColourCount)
-			PaletteTexture = null;
-		if (PaletteTexture == null) {
-			PaletteTexture = new Texture2D (PaletteColourCount, 1, TextureFormat.RG16, false);
-			PaletteTexture.filterMode = FilterMode.Point;
+
+	void UpdateVRamTexture()
+	{
+		UpdateTexture (ref VRamTexture, OnVRamTextureUpdated, this.Memory.VideoRam, ComponentSize.Eight);
+	}
+
+	void UpdateIoRamTexture()
+	{
+		UpdateTexture (ref IoRamTexture, OnIoRamTextureUpdated, this.Memory.IORam, ComponentSize.Eight);
+	}
+
+	static void UpdateTexture(ref Texture2D RamTexture,UnityEvent_Texture Event,byte[] Ram,ComponentSize Size,int Width=256)
+	{
+		var DataLength = Ram.Length / (int)Size;
+		var Height = DataLength / Width;
+
+		if (!Mathf.IsPowerOfTwo (Height))
+			Height = Mathf.NextPowerOfTwo (Height);
+
+		if (RamTexture == null || RamTexture.width != Width || RamTexture.height != Height)
+			RamTexture = null;
+		if (RamTexture == null) 
+		{
+			var Format = Size == ComponentSize.Eight ? TextureFormat.R8 : TextureFormat.RG16;
+			RamTexture = new Texture2D (Width, Height, Format, false);
+			RamTexture.filterMode = FilterMode.Point;
 		}
-		PaletteTexture.LoadRawTextureData (PaletteComponents);
-		PaletteTexture.Apply ();
-		OnPaletteTextureUpdated.Invoke(PaletteTexture);
+
+		//	gr: might need to realign these bytes
+		var RawPixels = RamTexture.GetRawTextureData();
+		if (RawPixels.Length != Ram.Length) 
+		{
+			Ram.CopyTo (RawPixels, 0);
+			RamTexture.LoadRawTextureData (RawPixels);
+		} 
+		else
+		{
+			RamTexture.LoadRawTextureData (Ram);
+		}
+
+		RamTexture.Apply ();
+		Event.Invoke(RamTexture);
 	}
 }
