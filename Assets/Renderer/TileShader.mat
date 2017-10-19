@@ -41,7 +41,7 @@ Material:
     - PaletteGreenStart: 5.51
     - PaletteRedStart: 0
     - TileByteOffset: 0
-    - TileDisplayHeight: 64
-    - TileDisplayWidth: 19.9
+    - TileDisplayHeight: 32
+    - TileDisplayWidth: 32.8
     - TileOffset: 0
     m_Colors: []

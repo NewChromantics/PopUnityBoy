@@ -91,8 +91,11 @@
 
 				//	this many bytes in vram 131072
 				//	2048 possible tiles
+				//	int CharacterSet = (BgContext >> 2) & 3;
+				int CharAddressBase = CharacterPage * 16384;//0x4000;
+				
 
-				int VramIndex = TileIndex * (8*8);
+				int VramIndex = CharAddressBase + TileIndex * (8*8);
 				int x = Tilex;
 				int y = Tiley;
 				VramIndex += x;
@@ -118,7 +121,7 @@
 				float Tileu = fmod( Renderxf, 1 );
 				float Tilev = 1 - fmod( Renderyf, 1 );
 
-				float4 Colour = GetTileColour( RenderIndex+TileOffset, float2(Tileu,Tilev) );
+				float4 Colour = GetTileColour( RenderIndex, float2(Tileu,Tilev) );
 				return Colour;
 			}
 			ENDCG
