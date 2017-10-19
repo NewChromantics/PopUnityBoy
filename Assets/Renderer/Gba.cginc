@@ -14,10 +14,16 @@ float4 PaletteTexture_TexelSize;
 #endif
 
 
+/*	gr: if these are not in the parent shader then all zero..
 int PaletteRedStart = 0;
 int PaletteGreenStart = 5;
 int PaletteBlueStart = 10;
-int PaletteEndianSwap = 1;
+int PaletteEndianSwap = 0;
+*/
+#define PaletteRedStart			0
+#define PaletteGreenStart		5
+#define PaletteBlueStart		10
+#define PaletteEndianSwap		0
 
 int RightShift(int Value,int ShiftAmount)	
 {
@@ -55,7 +61,7 @@ int And31(int Value)
 
 
 //	adapted from https://stackoverflow.com/a/27551433
-float4 UnpackColor15(float f) 
+float4 UnpackColor15(int f) 
 {
 /*
 	float a = RightShift( f, 15 );
@@ -92,14 +98,20 @@ float4 GetPalette15Colour(int Index)
 	int SourceWidth = PaletteTexture_TexelSize.z;
 	int SourceHeight = PaletteTexture_TexelSize.w;
 	int Samplex = Index % SourceWidth;
-	int Sampley = 1;
+	int Sampley = Index / SourceWidth;
 	float2 Sampleuv = float2(Samplex,Sampley) / float2(SourceWidth,SourceHeight);
 
 	//	scale float data to 16 bit
-	float2 Scalar = ( PaletteEndianSwap ) ? float2( 256, 256*256 ) : float2( 256*256, 256 );
-	//float2 Scalar = float2( 256, 256*256 );
-	float2 PaletteColour8_8 = tex2D(PaletteTexture, Sampleuv).rg * Scalar;
-	float PaletteColour16 = PaletteColour8_8.x + PaletteColour8_8.y;
+	//	gr: this doesnt work - maybe too big for floats? colours seem to bleed
+	/*
+	int2 Scalar = ( PaletteEndianSwap ) ? int2( 256, 256*256 ) : int2( 256*256, 256 );
+	int2 PaletteColour8_8 = tex2D(PaletteTexture, Sampleuv).xy * Scalar;
+	int PaletteColour16 = PaletteColour8_8.x + PaletteColour8_8.y;
+	*/
+	//	gr: works!
+	int2 PaletteColour8_8 = tex2D(PaletteTexture, Sampleuv).xy * 256;
+	int2 Scalar = ( PaletteEndianSwap ) ? int2( 256, 1 ) : int2( 1, 256 );
+	int PaletteColour16 = (PaletteColour8_8.x*Scalar.x) + (PaletteColour8_8.y*Scalar.y);
 
 	float4 rgba = UnpackColor15( PaletteColour16 );
 	return rgba;

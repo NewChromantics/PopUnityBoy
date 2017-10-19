@@ -41,7 +41,15 @@ public class GameboyManager : MonoBehaviour {
 	public UnityEvent_Texture	OnIoRamTextureUpdated;
 	Texture2D					IoRamTexture;
 
-
+	public bool					DebugPalette = false;
+	[Range(0,31)]
+	public int					DebugPaletteRed = 31;
+	[Range(0,31)]
+	public int					DebugPaletteGreen = 31;
+	[Range(0,31)]
+	public int					DebugPaletteBlue = 0;
+	[Range(0,1)]
+	public int					DebugPaletteAlpha = 0;
 
 	void Start ()
 	{
@@ -159,6 +167,22 @@ public class GameboyManager : MonoBehaviour {
 
 	void Update () 
 	{
+		//	overwrite palette
+		if ( DebugPalette )
+		{
+			int Colour16 = 0;
+			Colour16 |= DebugPaletteRed;
+			Colour16 |= DebugPaletteGreen << 5;
+			Colour16 |= DebugPaletteBlue << 10;
+			Colour16 |= DebugPaletteAlpha << 15;
+			byte Colour8a = (byte)( (Colour16>>0) & 0xff);
+			byte Colour8b = (byte)( (Colour16>>8) & 0xff );
+			for (int i = 0;	i < Memory.palRam.Length;	i += 2) {
+				Memory.palRam [i + 0] = Colour8a;
+				Memory.palRam [i + 1] = Colour8b;
+			}
+		}
+
 		GbaManager.EmulatorIteration ();
 
 		var renderer = Renderer as GarboDev.Renderer;
@@ -197,7 +221,7 @@ public class GameboyManager : MonoBehaviour {
 
 	void UpdatePaletteTexture()
 	{
-		UpdateTexture (ref PaletteTexture, OnPaletteTextureUpdated, this.Memory.PaletteRam, ComponentSize.Sixteen, 512 );
+		UpdateTexture (ref PaletteTexture, OnPaletteTextureUpdated, this.Memory.PaletteRam, ComponentSize.Sixteen, 32 );
 	}
 
 

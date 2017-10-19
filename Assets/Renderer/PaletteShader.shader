@@ -19,8 +19,8 @@
 			float4 _MainTex_ST;
 			float4 _MainTex_TexelSize;
 
-			#define PaletteTexture				_MainTex
-			#define PaletteTexture_TexelSize	_MainTex_TexelSize
+			//#define PaletteTexture				_MainTex
+			//#define PaletteTexture_TexelSize	_MainTex_TexelSize
 
 			#include "UnityCG.cginc"
 			#include "Gba.cginc"
@@ -57,11 +57,6 @@
 				int RenderIndex = Renderx + (RenderWidth * Rendery);
 
 				float4 rgba = GetPalette15Colour( RenderIndex );
-
-				//	test alpha
-				//rgba.xyz = rgba.w;
-
-				rgba.w = 1;
 				return rgba;
 			}
 			ENDCG
