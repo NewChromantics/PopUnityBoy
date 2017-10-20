@@ -41,6 +41,9 @@ public class GameboyManager : MonoBehaviour {
 	public UnityEvent_Texture	OnIoRamTextureUpdated;
 	Texture2D					IoRamTexture;
 
+	public UnityEvent_Texture	OnOamRamTextureUpdated;
+	Texture2D					OamRamTexture;
+
 	public bool					DebugPalette = false;
 	[Range(0,31)]
 	public int					DebugPaletteRed = 31;
@@ -211,6 +214,7 @@ public class GameboyManager : MonoBehaviour {
 		UpdatePaletteTexture ();
 		UpdateVRamTexture ();
 		UpdateIoRamTexture ();
+		UpdateOamRamTexture ();
 	}
 
 	enum ComponentSize
@@ -233,6 +237,11 @@ public class GameboyManager : MonoBehaviour {
 	void UpdateIoRamTexture()
 	{
 		UpdateTexture (ref IoRamTexture, OnIoRamTextureUpdated, this.Memory.IORam, ComponentSize.Eight, 32 );
+	}
+
+	void UpdateOamRamTexture()
+	{
+		UpdateTexture (ref OamRamTexture, OnOamRamTextureUpdated, this.Memory.OamRam, ComponentSize.Eight, 128 );
 	}
 
 	static void UpdateTexture(ref Texture2D RamTexture,UnityEvent_Texture Event,byte[] Ram,ComponentSize Size,int Width=256)

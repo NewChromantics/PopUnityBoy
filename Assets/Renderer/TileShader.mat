@@ -35,13 +35,13 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - CharacterPage: 0
+    - CharacterPage: 1
     - PaletteBlueStart: 10.37
     - PaletteEndianSwap: 0
     - PaletteGreenStart: 5.51
     - PaletteRedStart: 0
     - TileByteOffset: 0
-    - TileDisplayHeight: 32
-    - TileDisplayWidth: 32.8
-    - TileOffset: 0
+    - TileDisplayHeight: 13.3
+    - TileDisplayWidth: 17.3
+    - TileOffset: 755
     m_Colors: []

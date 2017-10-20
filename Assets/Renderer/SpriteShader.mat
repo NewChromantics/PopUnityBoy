@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: IoRamShader
-  m_Shader: {fileID: 4800000, guid: d63f4deaa058c4518a43abae9b13bd3f, type: 3}
+  m_Name: SpriteShader
+  m_Shader: {fileID: 4800000, guid: 546e81c54a2ae4d448750a142eb96546, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -23,7 +23,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - HighlightValue16: 196
-    - HighlightValue8: -1
-    - ShowRamIndex: -1
+    - CharacterSet: 0
+    - DisplaySpecificSprite: -1
+    - SpriteDisplayHeight: 12
+    - SpriteDisplayWidth: 11
     m_Colors: []

@@ -81,31 +81,6 @@
 			#define BGXVOFS(bg)	fmod( GetIoRam16( BG0VOFS + (bg*4) ), 511 )
 
 
-			float4 GetTileColour(int TileIndex,float2 Tileuv)
-			{
-				int Tilex = 8.0f * Tileuv.x;
-				int Tiley = 8.0f * Tileuv.y;
-
-
-				//return float4( TileIndex/2048.0f,0,0, 1);
-
-				//	this many bytes in vram 131072
-				//	2048 possible tiles
-				//	int CharacterSet = (BgContext >> 2) & 3;
-				int CharAddressBase = CharacterPage * 16384;//0x4000;
-				
-
-				int VramIndex = CharAddressBase + TileIndex * (8*8);
-				int x = Tilex;
-				int y = Tiley;
-				VramIndex += x;
-				VramIndex += y*8;
-				int PaletteIndex = GetVRam8( VramIndex );
-				//return float4( PaletteIndex / 256.0f, 0, 0, 1);
-				//int pal = tex2D( VRamTexture, i.uv ).r * 256;
-				float4 rgba = GetPalette15Colour( PaletteIndex );
-				return float4( rgba.xyz,1 );
-			}
 
 			fixed4 frag (v2f i) : SV_Target
 			{
@@ -121,7 +96,7 @@
 				float Tileu = fmod( Renderxf, 1 );
 				float Tilev = 1 - fmod( Renderyf, 1 );
 
-				float4 Colour = GetTileColour( RenderIndex, float2(Tileu,Tilev) );
+				float4 Colour = GetTileColour( RenderIndex + TileOffset, float2(Tileu,Tilev), CharacterPage );
 				return Colour;
 			}
 			ENDCG
