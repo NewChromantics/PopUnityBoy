@@ -113,7 +113,7 @@
         private byte[] iwRam = new byte[Memory.iwRamMask + 1];
         private byte[] ioReg = new byte[Memory.ioRegMask + 1];
         private byte[] vRam = new byte[Memory.vRamMask + 1];
-        private byte[] palRam = new byte[Memory.palRamMask + 1];
+        public byte[] palRam = new byte[Memory.palRamMask + 1];
         private byte[] oamRam = new byte[Memory.oamRamMask + 1];
         private byte[] sRam = new byte[Memory.sRamMask + 1];
 
