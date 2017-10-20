@@ -336,7 +336,7 @@ float4 GetSpriteTileColour(int TileIndex,float2 Tileuv,int CharacterSet)
 	//	int CharacterSet = (BgContext >> 2) & 3;
 	int CharAddressBase = (1+CharacterSet) * 0x10000;
 	//0x10000=65536
-	int VramIndex = CharAddressBase + (TileIndex * 64);
+	int VramIndex = CharAddressBase + (TileIndex * 32);
 	int x = Tilex;
 	int y = Tiley;
 	VramIndex += x;
@@ -415,10 +415,17 @@ float4 GetSpriteColour(int4 Sprite,float2 SpriteUv,int CharacterSet)
 	//	1D mapping
 	if ( !TwoDimensionMapping )
 	{
-		int Scale = 2;
-		TileOffset *= Scale;
-		TileIndex += TileOffset.x;
-		TileIndex += TileOffset.y * SpriteSizeChunks.x;
+		if ( Mirror )
+		{
+			TileOffset.x = SpriteSizeChunks.x - TileOffset.x;
+			//swap start
+			//baseSprite += ((width / 8) * scale) - scale;
+			//baseInc = -baseInc	//	work backwards
+
+			//SpriteUv.x = 1-SpriteUv.x;
+		}
+		TileIndex += TileOffset.x * OffsetScale;
+		TileIndex += (TileOffset.y * SpriteSizeChunks.x) * OffsetScale;
 	}
 
 	//if ( TileOffset.x > 0 || TileOffset.y > 0 )

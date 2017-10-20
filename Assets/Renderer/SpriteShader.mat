@@ -25,6 +25,6 @@ Material:
     m_Floats:
     - CharacterSet: 0
     - DisplaySpecificSprite: -1
-    - SpriteDisplayHeight: 12
-    - SpriteDisplayWidth: 11
+    - SpriteDisplayHeight: 7.63
+    - SpriteDisplayWidth: 5.23
     m_Colors: []
