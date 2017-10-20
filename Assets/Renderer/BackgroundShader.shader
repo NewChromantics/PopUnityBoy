@@ -3,9 +3,9 @@
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
-		VRamTexture("VRamTexture", 2D ) = "black" {}
-		IoRamTexture("IoRamTexture", 2D ) = "black" {}
-		PaletteTexture("PaletteTexture", 2D ) = "black" {}
+		//VRamTexture("VRamTexture", 2D ) = "black" {}
+		//IoRamTexture("IoRamTexture", 2D ) = "black" {}
+		//PaletteTexture("PaletteTexture", 2D ) = "black" {}
 	}
 	SubShader
 	{
@@ -61,7 +61,7 @@
 			#define BG1CNT	10
 			#define BG2CNT	12
 			#define BG2CNT	14
-			#define BGXCNT(bg)	GetIoRam16( BG0CNT + (bg*2) )
+			#define BGXCNT(bg)	GetIoRam16( BG0CNT + ((bg)*2) )
 
 			//	16 bit scroll pairs
 			#define BG0HOFS	0x10
@@ -69,6 +69,12 @@
 			#define BGXHOFS(bg)	fmod( GetIoRam16( BG0HOFS + (bg*4) ), 511 )
 			#define BGXVOFS(bg)	fmod( GetIoRam16( BG0VOFS + (bg*4) ), 511 )
 
+			int GetBackgroundPriority(int Background)
+			{
+				int BgContext = BGXCNT( Background );
+				int Priority = BgContext & 0x3;
+				return Priority;
+			}
 
 			void GetBackgroundColour(int Background,int2 xy,inout float4 Colour)
 			{
@@ -78,12 +84,6 @@
 
 				//	z order, match with sprites!
 				int BgContext = BGXCNT( Background );
-				int Priority = And3( BgContext );
-
-				if ( Background == 0 && BgContext != 196 )
-					RETURN_ERROR;
-
-				//int ResolutionMode = And3( RightShift( BgContext, 14 ) );
 				int ResolutionMode = (BgContext >> 14) & 3;
 				if ( Background == 0 && ResolutionMode != 0 )
 					RETURN_ERROR;
@@ -104,11 +104,9 @@
 				vofs = 0;
 
 				bool TileColourCount256 = (BgContext & (1<<7)) != 0;
-				//bool TileColourCount256 = And1( RightShift( BgContext, 7 ) ) != 0;
 				if ( !TileColourCount256 )
 					RETURN_ERROR;
-
-
+			
                 int bgy = ((xy.y + vofs) & (height - 1)) / 8;
 				int tileIdx = screenBase + (((bgy & 31) * 32) * 2);
 				switch ((BgContext >> 14) & 0x3)
@@ -140,6 +138,7 @@
                 }
               
 
+             	
 			}
 
 			fixed4 frag (v2f i) : SV_Target
@@ -149,10 +148,16 @@
 				float2 ScreenSize = float2( 240, 160 );
 				int2 xy = i.uv * ScreenSize;
 
-				GetBackgroundColour( 0, xy, Colour );
-				GetBackgroundColour( 1, xy, Colour );
-				GetBackgroundColour( 2, xy, Colour );
-				GetBackgroundColour( 3, xy, Colour );
+				//	draw backgrounds in their priority order
+				int BackgroundOrder[4];
+				BackgroundOrder[ GetBackgroundPriority(0) ] = 0;
+				BackgroundOrder[ GetBackgroundPriority(1) ] = 1;
+				BackgroundOrder[ GetBackgroundPriority(2) ] = 2;
+				BackgroundOrder[ GetBackgroundPriority(3) ] = 3;
+				GetBackgroundColour( BackgroundOrder[3], xy, Colour );
+				GetBackgroundColour( BackgroundOrder[2], xy, Colour );
+				GetBackgroundColour( BackgroundOrder[1], xy, Colour );
+				GetBackgroundColour( BackgroundOrder[0], xy, Colour );
 
 				return Colour;
 			}

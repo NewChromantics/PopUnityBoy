@@ -124,7 +124,7 @@ int GetVRam8(int Index)
 	float u = (Index % w) / w;
 	float v = (Index / w) / h;
 
-	float Value = tex2D( VRamTexture, float2(u,v) ) * 256;
+	int Value = tex2D( VRamTexture, float2(u,v) ) * 256;
 
 	return Value;
 }
@@ -141,19 +141,19 @@ int GetIoRam8(int Index)
 {
 	float w = IoRamTexture_TexelSize.z;
 	float h = IoRamTexture_TexelSize.w;
-	float u = (Index % w) / (float)w;
-	float v = (Index / w) / (float)h;
+	float u = (Index % w) / w;
+	float v = (Index / w) / h;
 
-	float Value = tex2D( IoRamTexture, float2(u,v) ) * 256;
+	int Value = tex2D( IoRamTexture, float2(u,v) ).x * 256.0f;
 
 	return Value;
 }
 
 int GetIoRam16(int Index)
 {
-	int x = GetIoRam8( Index );
-	x += GetIoRam8( Index+1 ) * 256;
-	return x;
+	int a = GetIoRam8( Index+0 );
+	int b = GetIoRam8( Index+1 ) * 256;
+	return a+b;
 }
 
 //	mode 1 stuff

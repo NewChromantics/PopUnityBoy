@@ -19,8 +19,8 @@
 			float4 _MainTex_ST;
 			float4 _MainTex_TexelSize;
 
-			//#define PaletteTexture				_MainTex
-			//#define PaletteTexture_TexelSize	_MainTex_TexelSize
+			#define PaletteTexture				_MainTex
+			#define PaletteTexture_TexelSize	_MainTex_TexelSize
 
 			#include "UnityCG.cginc"
 			#include "Gba.cginc"
