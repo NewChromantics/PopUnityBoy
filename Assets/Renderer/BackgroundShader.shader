@@ -100,8 +100,8 @@
 				int charBase = And3( RightShift(BgContext,2) ) * 0x4000;
 				int hofs = BGXHOFS(Background);
 				int vofs = BGXVOFS(Background);
-				hofs = 0;
-				vofs = 0;
+				//hofs = 0;
+				//vofs = 0;
 
 				bool TileColourCount256 = (BgContext & (1<<7)) != 0;
 				if ( !TileColourCount256 )
@@ -146,7 +146,8 @@
 				//	clear colour
 				float4 Colour = GetBgColour();
 				float2 ScreenSize = float2( 240, 160 );
-				int2 xy = i.uv * ScreenSize;
+				float2 uv = float2( i.uv.x, 1-i.uv.y );
+				int2 xy = uv * ScreenSize;
 
 				//	draw backgrounds in their priority order
 				int BackgroundOrder[4];
