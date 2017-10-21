@@ -64,6 +64,16 @@ public class GameboyManager : MonoBehaviour {
 	[Range(0,1)]
 	public int					DebugPaletteAlpha = 0;
 
+
+	public string				InputAxisHorizontal = "Horizontal";
+	public string				InputAxisVertical = "Vertical";
+	public string				InputActionA = "Fire1";
+	public string				InputActionB = "Fire2";
+	public string				InputActionL = "Fire3";
+	public string				InputActionR = "Jump";
+	public string				InputActionStart = "Submit";
+	public string				InputActionSelect = "Cancel";
+
 	void Start ()
 	{
 		if ( FrameTarget != null )
@@ -214,6 +224,8 @@ public class GameboyManager : MonoBehaviour {
 			}
 		}
 
+		UpdateInput ();
+
 		GbaManager.EmulatorIteration ();
 
 		try
@@ -335,4 +347,40 @@ public class GameboyManager : MonoBehaviour {
 		RamTexture.Apply ();
 		Event.Invoke(RamTexture);
 	}
+
+
+	void UpdateInput()
+	{
+		var LeftRight = Input.GetAxis (InputAxisHorizontal);
+		var Left = (LeftRight < 0);
+		var Right = (LeftRight > 0);
+		var UpDown = Input.GetAxis (InputAxisVertical);
+		var Down = (UpDown < 0);
+		var Up = (UpDown > 0);
+		var A = Input.GetButton (InputActionA);
+		var B = Input.GetButton (InputActionB);
+		var Start = Input.GetButton (InputActionStart);
+		var Select = Input.GetButton (InputActionSelect);
+		var L = Input.GetButton (InputActionL);
+		var R = Input.GetButton (InputActionR);
+
+		int State = 0;
+		State |= (A ? 1 : 0) << 0;
+		State |= (B ? 1 : 0) << 1;
+		State |= (Select ? 1 : 0) << 2;
+		State |= (Start ? 1 : 0) << 3;
+		State |= (Right ? 1 : 0) << 4;
+		State |= (Left ? 1 : 0) << 5;
+		State |= (Up ? 1 : 0) << 6;
+		State |= (Down ? 1 : 0) << 7;
+		State |= (R ? 1 : 0) << 8;
+		State |= (L ? 1 : 0) << 9;
+
+		//	state is inverted
+		ushort StateMask = (ushort)((1<<10)-1);
+		var State16 = (ushort)((~State) & StateMask);
+
+		GbaManager.KeyState = State16;
+	}
+
 }

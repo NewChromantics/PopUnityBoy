@@ -507,6 +507,7 @@ MonoBehaviour:
   EnableCpuRenderer: 0
   FrameTarget: {fileID: 0}
   FrameRenderer: {fileID: 2100000, guid: 93f86a1f20bd741b1889986ec78b10ff, type: 2}
+  BlitFrameInCoRoutine: 1
   OnTextureUpdated:
     m_PersistentCalls:
       m_Calls:
@@ -521,7 +522,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6503.39845, Culture=neutral,
+    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6504.978, Culture=neutral,
       PublicKeyToken=null
   Flip: 1
   ForceOpaque: 1
@@ -553,7 +554,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6503.39845, Culture=neutral,
+    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6504.978, Culture=neutral,
       PublicKeyToken=null
   OnVRamTextureUpdated:
     m_PersistentCalls:
@@ -580,7 +581,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6503.39845, Culture=neutral,
+    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6504.978, Culture=neutral,
       PublicKeyToken=null
   OnIoRamTextureUpdated:
     m_PersistentCalls:
@@ -607,7 +608,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6503.39845, Culture=neutral,
+    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6504.978, Culture=neutral,
       PublicKeyToken=null
   OnOamRamTextureUpdated:
     m_PersistentCalls:
@@ -634,13 +635,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6503.39845, Culture=neutral,
+    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6504.978, Culture=neutral,
       PublicKeyToken=null
   DebugPalette: 0
   DebugPaletteRed: 31
   DebugPaletteGreen: 31
   DebugPaletteBlue: 0
   DebugPaletteAlpha: 0
+  InputAxisHorizontal: Horizontal
+  InputAxisVertical: Vertical
+  InputActionA: Fire1
+  InputActionB: Fire2
+  InputActionL: Fire3
+  InputActionR: Jump
+  InputActionStart: Submit
+  InputActionSelect: Cancel
 --- !u!4 &476232141
 Transform:
   m_ObjectHideFlags: 0
