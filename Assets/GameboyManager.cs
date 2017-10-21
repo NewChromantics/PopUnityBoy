@@ -10,6 +10,9 @@ public class UnityEvent_Texture : UnityEvent <Texture> {}
 
 public class GameboyManager : MonoBehaviour {
 
+	const int GbaScreenWidth = 240;
+	const int GbaScreenHeight = 160;
+
 	public TextAsset		Bios;
 	public TextAsset		Rom;
 	GarboDev.GbaManager		GbaManager;
@@ -18,6 +21,12 @@ public class GameboyManager : MonoBehaviour {
 	public bool				EnableCpuRenderer = true;
 	public RenderTexture	FrameTarget;
 	Texture2D				Frame2D;
+
+	public Material			FrameRenderer;
+	public bool				BlitFrameInCoRoutine = true;
+	RenderTexture			RenderedFrame;
+
+
 	public UnityEvent_Texture	OnTextureUpdated;
 	public bool				Flip = true;
 	public bool				ForceOpaque = true;
@@ -29,7 +38,7 @@ public class GameboyManager : MonoBehaviour {
 	[Range(100,160*240)]
 	public int				WritePixelsPerThread = 100;
 	[Range(1,160*240)]
-	public int				PixelCountClip = 160*240;
+	public int				PixelCountClip = GbaScreenWidth*GbaScreenHeight;
 
 
 	//	renderer stuff
@@ -64,7 +73,7 @@ public class GameboyManager : MonoBehaviour {
 
 		GbaManager = new GarboDev.GbaManager (Memory,GetSystemTimeSecs,ResetTime);
 
-		Frame2D = new Texture2D (240,160, TextureFormat.ARGB32, false);
+		Frame2D = new Texture2D (GbaScreenWidth,GbaScreenHeight, TextureFormat.ARGB32, false);
 
 		if ( EnableCpuRenderer )
 			Renderer = new GarboDev.Renderer (Memory);
@@ -166,9 +175,26 @@ public class GameboyManager : MonoBehaviour {
 			Thread.Sleep(1);
 		}
 	}
-		
 
+	IEnumerator BlitFrameCoroutine()
+	{
+		yield return new WaitForEndOfFrame();
+		BlitFrame ();
+	}
 
+	void QueueBlitFrame()
+	{
+		if (BlitFrameInCoRoutine)
+			StartCoroutine ( BlitFrameCoroutine() );
+		else
+			BlitFrame ();
+	}
+
+	void BlitFrame()
+	{
+		Graphics.Blit (null, RenderedFrame, FrameRenderer);
+		OnTextureUpdated.Invoke (RenderedFrame);
+	}
 
 	void Update () 
 	{
@@ -193,8 +219,8 @@ public class GameboyManager : MonoBehaviour {
 		try
 		{
 			var renderer = Renderer as GarboDev.Renderer;
-			var PixelsArray = Frame2D.GetPixels ();
 			var FrameArray = renderer.GetFrame ();
+			var PixelsArray = Frame2D.GetPixels ();
 
 			unsafe
 			{
@@ -223,6 +249,15 @@ public class GameboyManager : MonoBehaviour {
 		UpdateVRamTexture ();
 		UpdateIoRamTexture ();
 		UpdateOamRamTexture ();
+
+		if (FrameRenderer != null) {
+			if (RenderedFrame == null) {
+				RenderedFrame = new RenderTexture (GbaScreenWidth, GbaScreenHeight, 0 );
+				RenderedFrame.useMipMap = false;
+				RenderedFrame.filterMode = FilterMode.Point;
+			}
+			QueueBlitFrame();
+		}
 	}
 
 	enum ComponentSize

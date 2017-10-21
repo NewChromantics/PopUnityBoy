@@ -273,43 +273,30 @@ int2 GetSpriteSize(int4 Sprite)
 	#define SIZE_MODE_RECTVERT	2
 	#define SIZE_MODE_UNKNOWN	3
 
-	int2 Size = int2(8,8);
+	int2 Scales[4][4];
+	Scales[SIZE_MODE_SQUARE][0] = int2( 8,8 );
+	Scales[SIZE_MODE_SQUARE][1] = int2( 16,16 );
+	Scales[SIZE_MODE_SQUARE][2] = int2( 32,32 );
+	Scales[SIZE_MODE_SQUARE][3] = int2( 64,64 );
+	
+	Scales[SIZE_MODE_RECTHORZ][0] = int2( 16,8 );
+	Scales[SIZE_MODE_RECTHORZ][1] = int2( 32,16 );
+	Scales[SIZE_MODE_RECTHORZ][2] = int2( 32,16 );
+	Scales[SIZE_MODE_RECTHORZ][3] = int2( 64,32 );
+	
+	Scales[SIZE_MODE_RECTVERT][0] = int2( 8,16 );
+	Scales[SIZE_MODE_RECTVERT][1] = int2( 8,32 );
+	Scales[SIZE_MODE_RECTVERT][2] = int2( 16,32 );
+	Scales[SIZE_MODE_RECTVERT][3] = int2( 32,64 );
 
-	if ( SizeMode == SIZE_MODE_SQUARE )
-	{
-		int2 Scales[4];
-		Scales[0] = int2( 8,8 );
-		Scales[1] = int2( 16,16 );
-		Scales[2] = int2( 32,32 );
-		Scales[3] = int2( 64,64 );
-		Size = Scales[Scale];
-	}
-	else if ( SizeMode == SIZE_MODE_RECTHORZ )
-	{
-		int2 Scales[4];
-		Scales[0] = int2( 16,8 );
-		Scales[1] = int2( 32,16 );
-		Scales[2] = int2( 32,16 );
-		Scales[3] = int2( 64,32 );
-		Size = Scales[Scale];
-	}
-	else if ( SizeMode == SIZE_MODE_RECTVERT )
-	{
-		int2 Scales[4];
-		Scales[0] = int2( 8,16 );
-		Scales[1] = int2( 8,32 );
-		Scales[2] = int2( 16,32 );
-		Scales[3] = int2( 32,64 );
-		Size = Scales[Scale];
-	}
-
+	int2 Size = Scales[SizeMode][Scale];
+	
 	bool DoubleSize = (Sprite[0] & (1<<8)) != 0;
 	bool RotateScaleEnabled = (Sprite[0] & (1<<9)) != 0;
-	if ( DoubleSize && RotateScaleEnabled )
-	{
-		Size *= 2;
-	}
-	else if ( RotateScaleEnabled )
+	DoubleSize = DoubleSize && RotateScaleEnabled;
+	Size *= DoubleSize ? 2 : 1;
+
+	if ( !DoubleSize && RotateScaleEnabled )
 	{
 		//	invalid sprite.... on purpose?
 	}
@@ -444,9 +431,9 @@ float4 GetSpriteColour(int4 Sprite,float2 SpriteUv)
 	//return float4( SpriteUv, 0, 1 );
 	float4 TileColour = GetSpriteTileColour( TileIndex, SpriteUv );
 
-	if ( RenderEdge )
-		return float4(1,0,1,1);
+	float4 EdgeColour = float4(1,0,1,1);
+	TileColour = lerp( TileColour, EdgeColour, RenderEdge );
 
-    return TileColour;
+	return TileColour;
 }
 

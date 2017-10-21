@@ -85,8 +85,6 @@
 				//	z order, match with sprites!
 				int BgContext = BGXCNT( Background );
 				int ResolutionMode = (BgContext >> 14) & 3;
-				if ( Background == 0 && ResolutionMode != 0 )
-					RETURN_ERROR;
 				int2 Resolutions[4];
 				Resolutions[0] = int2( 256, 256 );
 				Resolutions[1] = int2( 512, 256 );
@@ -100,15 +98,14 @@
 				int charBase = And3( RightShift(BgContext,2) ) * 0x4000;
 				int hofs = BGXHOFS(Background);
 				int vofs = BGXVOFS(Background);
-				//hofs = 0;
-				//vofs = 0;
 
 				bool TileColourCount256 = (BgContext & (1<<7)) != 0;
-				if ( !TileColourCount256 )
-					RETURN_ERROR;
+				//if ( !TileColourCount256 )
+				//	RETURN_ERROR;
 			
                 int bgy = ((xy.y + vofs) & (height - 1)) / 8;
 				int tileIdx = screenBase + (((bgy & 31) * 32) * 2);
+				/*
 				int TileSizeMode = (BgContext >> 14) & 0x3;
 				switch (TileSizeMode)
                 {
@@ -122,32 +119,34 @@
                     	tileIdx += 32 * 32 * 4; 
                     break;
                 }
-
+                */
                	//	gr: get rid of all these magic numbers!
-                int tileY = ((xy.y + vofs) & 0x7) * 8;
 
                 int i = xy.x;
                 int bgx = ((i + hofs) & (width - 1)) / 8;
                 int tmpTileIdx = tileIdx + ((bgx & 31) * 2);
-                if (bgx >= 32) 
-                	tmpTileIdx += 32 * 32 * 2;
+
+
+                //if (bgx >= 32) 
+                //	tmpTileIdx += 32 * 32 * 2;
 
                 int tileChar = GetVRam16( tmpTileIdx );
-                int x = (i + hofs) & 7;
-                int y = tileY;
-                if ((tileChar & (1 << 10)) != 0) 
-                	x = 7 - x;
-                if ((tileChar & (1 << 11)) != 0) 
-               		y = 56 - y;
+                bool Mirror = (tileChar & (1 << 10)) != 0;
+                bool Flip = (tileChar & (1 << 11)) != 0;
 
-                int TileVRamIndex = charBase + ((tileChar & 0x3FF) * (8*8)) + y + x;
+                int TileY = ((xy.y + vofs) & 0x7);
+                int TileX = (i + hofs) & 7;
+
+                int TileIndex = tileChar & 0x3FF;
+                int TileVRamIndex = charBase;
+                TileVRamIndex += TileIndex * 64;
+                TileVRamIndex += TileY * 8;
+                TileVRamIndex += TileX;
+
                 int PaletteIndex = GetVRam8( TileVRamIndex );
-                if ( PaletteIndex != 0 )
-                {
-                	//	todo: get blend mode
-
-                	Colour.xyz = GetPalette15Colour( PaletteIndex );
-                }
+                float BlendAmount = (PaletteIndex==0) ? 0 : 1;
+                float4 TileColour = GetPalette15Colour( PaletteIndex );
+                Colour.xyz = lerp( Colour, TileColour, BlendAmount );
 			}
 
 			float Range(float Value,float Min,float Max)
@@ -172,8 +171,15 @@
 				return (Value>=0) && (Value<1);
 			}
 
-			//	gr: a pre-sort step for sprites would be good for optimisation
-			void GetSpriteLayerColour(int PriorityFilter,int2 xy,inout float4 Colour)
+			void BlendAlphaColour(inout float4 Colour,float4 NewColour)
+			{
+				float OldAlpha = Colour.w;
+				float Alpha = NewColour.w;
+				Colour = ( Colour * (1-Alpha) ) + ( NewColour * Alpha );
+				Colour.w = max( OldAlpha, Alpha );
+			}
+		
+			void GetSpriteLayerColours(int2 xy,inout float4 Colours[4])
 			{
 				int DisplayContext = 0;
 				DisplayContext |= 1 << 12;
@@ -184,41 +190,23 @@
 					return;
 
 				//	sprites render smallest index on top
-				//for ( int s=MAX_SPRITES-1;	s>=0;	s-- )
-				for ( int s=20-1;	s>=0;	s-- )
+				for ( int s=MAX_SPRITES-1;	s>=0;	s-- )
 				{
-					bool Valid = true;
 					int4 Sprite = GetSprite(s);
 					int SpritePriority = GetSpritePriority(Sprite);
-					Valid = Valid && ( SpritePriority == PriorityFilter );
 
 					int2 SpritePos = GetSpritePos( Sprite );
 					int2 SpriteSize = GetSpriteSize( Sprite );
 					float2 SpriteUv = GetRectUv( xy, SpritePos, SpriteSize );
-					Valid = Valid && IsInside01( SpriteUv.x ) && IsInside01( SpriteUv.y );
+					float Visible = IsInside01( SpriteUv.x ) && IsInside01( SpriteUv.y );
 
+					float4 Colour = Colours[SpritePriority];
 					float4 SpriteColour = GetSpriteColour( Sprite, SpriteUv );
 
 					//	blend sprite colour with alpha
-					float Alpha = SpriteColour.w;
-					//SpriteColour.xyz = (Colour.xyz*(1-Alpha)) + (SpriteColour.xyz*(Alpha));
-					Valid = Valid && (Alpha > 0);
-
-					Colour.xyz = lerp( Colour, SpriteColour, Valid );
-
-					/*
-					if ((this.dispCnt & 0x7) >= 3 && (attr2 & 0x3FF) < 0x200) continue;
-
-		                // Y clipping
-		                if (y > ((y + rheight) & 0xff))
-		                {
-		                    if (this.curLine >= ((y + rheight) & 0xff) && !(y < this.curLine)) continue;
-		                }
-		                else
-		                {
-		                    if (this.curLine < y || this.curLine >= ((y + rheight) & 0xff)) continue;
-		                }
-					*/
+					SpriteColour.w = min( Visible, SpriteColour.w );
+					BlendAlphaColour( Colour, SpriteColour );
+					Colours[SpritePriority] = Colour;
 				}
 			}
 
@@ -238,17 +226,27 @@
 				BackgroundOrder[ GetBackgroundPriority(2) ] = 2;
 				BackgroundOrder[ GetBackgroundPriority(3) ] = 3;
 
+				//	build colour for each layer so we only iterate over sprites once
+				float4 SpriteLayerColours[4];
+				SpriteLayerColours[0] = float4(1,0,0,0);
+				SpriteLayerColours[1] = float4(1,1,0,0);
+				SpriteLayerColours[2] = float4(0,1,0,0);
+				SpriteLayerColours[3] = float4(0,0,1,0);
+				GetSpriteLayerColours( xy, SpriteLayerColours );
+
 				GetBackgroundColour( BackgroundOrder[3], xy, Colour );
-				GetSpriteLayerColour( 3, xy, Colour );
+				BlendAlphaColour( Colour, SpriteLayerColours[3] );
 
 				GetBackgroundColour( BackgroundOrder[2], xy, Colour );
-				GetSpriteLayerColour( 2, xy, Colour );
+				BlendAlphaColour( Colour, SpriteLayerColours[2] );
 
 				GetBackgroundColour( BackgroundOrder[1], xy, Colour );
-				GetSpriteLayerColour( 1, xy, Colour );
+				BlendAlphaColour( Colour, SpriteLayerColours[1] );
 
 				GetBackgroundColour( BackgroundOrder[0], xy, Colour );
-				GetSpriteLayerColour( 0, xy, Colour );
+				BlendAlphaColour( Colour, SpriteLayerColours[0] );
+
+				Colour.w = 1;
 
 				return Colour;
 			}
