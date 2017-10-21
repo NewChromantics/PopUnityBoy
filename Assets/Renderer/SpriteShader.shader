@@ -6,7 +6,6 @@
 		DisplaySpecificSprite("DisplaySpecificSprite", Range(-1,1023) ) = -1
 		SpriteDisplayWidth("SpriteDisplayWidth", Range(1,11) ) = 11
 		SpriteDisplayHeight("SpriteDisplayHeight", Range(1,12) ) = 12
-		CharacterSet("CharacterSet", Range(0,256) ) = 0
 	}
 	SubShader
 	{
@@ -42,7 +41,6 @@
 			int SpriteDisplayWidth;
 			int SpriteDisplayHeight;
 
-			int CharacterSet;
 	
 			v2f vert (appdata v)
 			{
@@ -80,7 +78,7 @@
 
 				int4 Sprite = GetSprite( RenderIndex );
 
-				float4 Colour = GetSpriteColour( Sprite, SpriteUv, CharacterSet );
+				float4 Colour = GetSpriteColour( Sprite, SpriteUv );
 			
 				return Colour;
 			}

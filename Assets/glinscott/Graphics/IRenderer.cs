@@ -9,4 +9,12 @@
         void RenderLine(int line);
         void ShowFrame();
     }
+
+	public class NoopRenderer : IRenderer
+	{
+		public void Initialize(object data)	{}
+		public void Reset()					{}
+		public void RenderLine(int line)		{}
+		public void ShowFrame()				{}
+	}
 }

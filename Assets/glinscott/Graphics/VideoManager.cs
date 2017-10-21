@@ -15,6 +15,9 @@ namespace GarboDev
 			this.memory = memory;
 			this.Renderer = Renderer;
 			this.OnRenderFrame = OnRenderFrame;
+
+			if ( this.Renderer == null )
+				this.Renderer = new NoopRenderer();
         }
 
         public void Reset()

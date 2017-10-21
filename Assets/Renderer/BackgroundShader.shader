@@ -150,6 +150,27 @@
                 }
 			}
 
+			float Range(float Value,float Min,float Max)
+			{
+				return (Value-Min) / (Max-Min);
+			}
+
+			float2 Range2(float2 Value,float2 Min,float2 Max)
+			{
+				float x = Range( Value.x, Min.x, Max.x );
+				float y = Range( Value.y, Min.y, Max.y );
+				return float2( x, y );
+			}
+
+			float2 GetRectUv(float2 Position,float2 RectPos,float2 RectSize)
+			{
+				return Range2( Position, RectPos, RectPos + RectSize );
+			}
+
+			bool IsInside01(float Value)
+			{
+				return (Value>=0) && (Value<1);
+			}
 
 			//	gr: a pre-sort step for sprites would be good for optimisation
 			void GetSpriteLayerColour(int PriorityFilter,int2 xy,inout float4 Colour)
@@ -163,12 +184,27 @@
 					return;
 
 				//	sprites render smallest index on top
-				for ( int s=MAX_SPRITES-1;	s>=0;	s-- )
+				//for ( int s=MAX_SPRITES-1;	s>=0;	s-- )
+				for ( int s=20-1;	s>=0;	s-- )
 				{
+					bool Valid = true;
 					int4 Sprite = GetSprite(s);
 					int SpritePriority = GetSpritePriority(Sprite);
-					if ( SpritePriority != PriorityFilter )
-						continue;
+					Valid = Valid && ( SpritePriority == PriorityFilter );
+
+					int2 SpritePos = GetSpritePos( Sprite );
+					int2 SpriteSize = GetSpriteSize( Sprite );
+					float2 SpriteUv = GetRectUv( xy, SpritePos, SpriteSize );
+					Valid = Valid && IsInside01( SpriteUv.x ) && IsInside01( SpriteUv.y );
+
+					float4 SpriteColour = GetSpriteColour( Sprite, SpriteUv );
+
+					//	blend sprite colour with alpha
+					float Alpha = SpriteColour.w;
+					//SpriteColour.xyz = (Colour.xyz*(1-Alpha)) + (SpriteColour.xyz*(Alpha));
+					Valid = Valid && (Alpha > 0);
+
+					Colour.xyz = lerp( Colour, SpriteColour, Valid );
 
 					/*
 					if ((this.dispCnt & 0x7) >= 3 && (attr2 & 0x3FF) < 0x200) continue;

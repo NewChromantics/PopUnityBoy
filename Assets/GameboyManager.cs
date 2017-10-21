@@ -15,6 +15,7 @@ public class GameboyManager : MonoBehaviour {
 	GarboDev.GbaManager		GbaManager;
 	GarboDev.IRenderer		Renderer;
 	GarboDev.Memory			Memory;
+	public bool				EnableCpuRenderer = true;
 	public RenderTexture	FrameTarget;
 	Texture2D				Frame2D;
 	public UnityEvent_Texture	OnTextureUpdated;
@@ -65,7 +66,8 @@ public class GameboyManager : MonoBehaviour {
 
 		Frame2D = new Texture2D (240,160, TextureFormat.ARGB32, false);
 
-		Renderer = new GarboDev.Renderer (Memory);
+		if ( EnableCpuRenderer )
+			Renderer = new GarboDev.Renderer (Memory);
 
 		GbaManager.LoadBios (Bios.bytes);
 
@@ -188,28 +190,34 @@ public class GameboyManager : MonoBehaviour {
 
 		GbaManager.EmulatorIteration ();
 
-		var renderer = Renderer as GarboDev.Renderer;
-		var PixelsArray = Frame2D.GetPixels ();
-		var FrameArray = renderer.GetFrame ();
-
-		unsafe
+		try
 		{
-			fixed(uint* Frame = &FrameArray[0])
+			var renderer = Renderer as GarboDev.Renderer;
+			var PixelsArray = Frame2D.GetPixels ();
+			var FrameArray = renderer.GetFrame ();
+
+			unsafe
 			{
-				fixed(Color* Pixels = &PixelsArray[0])
+				fixed(uint* Frame = &FrameArray[0])
 				{
-					ThreadedCopy( Frame, Pixels, Frame2D.width, Frame2D.height, FrameArray.Length, PixelsArray.Length );
+					fixed(Color* Pixels = &PixelsArray[0])
+					{
+						ThreadedCopy( Frame, Pixels, Frame2D.width, Frame2D.height, FrameArray.Length, PixelsArray.Length );
+					}
 				}
 			}
+
+			Frame2D.SetPixels (PixelsArray);
+			Frame2D.Apply ();
+
+			if ( FrameTarget != null )
+				Graphics.Blit (Frame2D, FrameTarget);
+
+			OnTextureUpdated.Invoke (Frame2D);
 		}
-
-		Frame2D.SetPixels (PixelsArray);
-		Frame2D.Apply ();
-
-		if ( FrameTarget != null )
-			Graphics.Blit (Frame2D, FrameTarget);
-
-		OnTextureUpdated.Invoke (Frame2D);
+		catch
+		{
+		}
 
 		UpdatePaletteTexture ();
 		UpdateVRamTexture ();
@@ -244,6 +252,30 @@ public class GameboyManager : MonoBehaviour {
 		UpdateTexture (ref OamRamTexture, OnOamRamTextureUpdated, this.Memory.OamRam, ComponentSize.Eight, 128 );
 	}
 
+	static Dictionary<Texture,byte[]>	TextureAlignedByteCache;
+
+	static byte[] GetTextureSizedBytes(Texture2D Texture,byte[] Data)
+	{
+		var TextureSize = (Texture.format == TextureFormat.R8) ?  1 : 2;
+		TextureSize *= Texture.width;
+		TextureSize *= Texture.height;
+
+		if (Data.Length == TextureSize)
+			return Data;
+
+		if (TextureAlignedByteCache == null)
+			TextureAlignedByteCache = new Dictionary<Texture,byte[]> ();
+
+		if (!TextureAlignedByteCache.ContainsKey (Texture)) {
+			var NewData = new byte[TextureSize];
+			TextureAlignedByteCache [Texture] = NewData;
+		}
+
+		var ResizedData = TextureAlignedByteCache[Texture];
+		Data.CopyTo (ResizedData, 0);
+		return ResizedData;
+	}
+
 	static void UpdateTexture(ref Texture2D RamTexture,UnityEvent_Texture Event,byte[] Ram,ComponentSize Size,int Width=256)
 	{
 		var DataLength = Ram.Length / (int)Size;
@@ -262,18 +294,9 @@ public class GameboyManager : MonoBehaviour {
 			RamTexture.wrapMode = TextureWrapMode.Clamp;
 		}
 
-		//	gr: might need to realign these bytes
-		var RawPixels = RamTexture.GetRawTextureData();
-		if (RawPixels.Length != Ram.Length) 
-		{
-			Ram.CopyTo (RawPixels, 0);
-			RamTexture.LoadRawTextureData (RawPixels);
-		} 
-		else
-		{
-			RamTexture.LoadRawTextureData (Ram);
-		}
-
+		var PixelData = GetTextureSizedBytes (RamTexture, Ram);
+		RamTexture.LoadRawTextureData (PixelData);
+	
 		RamTexture.Apply ();
 		Event.Invoke(RamTexture);
 	}

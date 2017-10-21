@@ -30,7 +30,12 @@ int PaletteEndianSwap = 0;
 #define PaletteBlueStart		10
 #define PaletteEndianSwap		0
 
+//#define SPRITE_EDGE_WIDTH	0.03f
+#define SPRITE_EDGE_WIDTH	0
 
+
+//	gr: iirc transparent index can move, but that may be gifs.
+#define TRANSPARENT_PALETTE_INDEX	0
 #define MAX_SPRITES			128
 
 
@@ -123,6 +128,8 @@ float4 GetPalette15Colour(int Index)
 	int PaletteColour16 = (PaletteColour8_8.x*Scalar.x) + (PaletteColour8_8.y*Scalar.y);
 
 	float4 rgba = UnpackColor15( PaletteColour16 );
+	rgba.w = Index!=TRANSPARENT_PALETTE_INDEX;
+
 	return rgba;
 }
 
@@ -189,7 +196,9 @@ int GetOamRam16(int Index)
 //	mode 1 stuff
 float4 GetBgColour()
 {
-	return GetPalette15Colour( 0 );
+	float4 Colour = GetPalette15Colour( 0 );
+	Colour.w = 1;
+	return Colour;
 }
 
 
@@ -324,7 +333,7 @@ int GetSpriteTileIndex(int4 Sprite)
 
 
 
-float4 GetSpriteTileColour(int TileIndex,float2 Tileuv,int CharacterSet)
+float4 GetSpriteTileColour(int TileIndex,float2 Tileuv)
 {
 	int Tilex = 8.0f * Tileuv.x;
 	int Tiley = 8.0f * Tileuv.y;
@@ -334,7 +343,7 @@ float4 GetSpriteTileColour(int TileIndex,float2 Tileuv,int CharacterSet)
 	//	this many bytes in vram 131072
 	//	2048 possible tiles
 	//	int CharacterSet = (BgContext >> 2) & 3;
-	int CharAddressBase = (1+CharacterSet) * 0x10000;
+	int CharAddressBase = 0x10000;
 	//0x10000=65536
 	int VramIndex = CharAddressBase + (TileIndex * 32);
 	int x = Tilex;
@@ -345,19 +354,20 @@ float4 GetSpriteTileColour(int TileIndex,float2 Tileuv,int CharacterSet)
 	//return float4( PaletteIndex / 256.0f, 0, 0, 1);
 	//int pal = tex2D( VRamTexture, i.uv ).r * 256;
 	float4 rgba = GetPalette15Colour( PaletteIndex );
-	return float4( rgba.xyz,1 );
+	return rgba;
 }
 
 
 
-float4 GetSpriteColourFromIndex(int TileIndex,float2 SpriteUv,int CharacterSet)
+float4 GetSpriteColourFromIndex(int TileIndex,float2 SpriteUv)
 {
    //TileIndex *= 2;
-   float4 TileColour = GetSpriteTileColour( TileIndex, SpriteUv, CharacterSet );
+   float4 TileColour = GetSpriteTileColour( TileIndex, SpriteUv );
    return TileColour;
 }
-                                                                  
-float4 GetSpriteColour(int4 Sprite,float2 SpriteUv,int CharacterSet)
+
+
+float4 GetSpriteColour(int4 Sprite,float2 SpriteUv)
 {
 	bool ColourMode256 = (Sprite[0] & (1 << 13)) != 0;
 	//	if ((i & 0x1ff) < 240 && true)
@@ -393,7 +403,7 @@ float4 GetSpriteColour(int4 Sprite,float2 SpriteUv,int CharacterSet)
 	//if ( Mirror )  	SpriteUv.x = 1-SpriteUv.x;
 	//if ( Flip )	   	SpriteUv.y = 1-SpriteUv.y;
 
-	float EdgeSize = 0.03f;
+	float EdgeSize = SPRITE_EDGE_WIDTH;
 	bool RenderEdge = (SpriteUv.x < EdgeSize) || (SpriteUv.x > 1-EdgeSize) || (SpriteUv.y < EdgeSize) || (SpriteUv.y > 1-EdgeSize);
 
     //	grab tile for this chunk
@@ -432,7 +442,7 @@ float4 GetSpriteColour(int4 Sprite,float2 SpriteUv,int CharacterSet)
 	//	return float4(1,1,1,1);
 
 	//return float4( SpriteUv, 0, 1 );
-	float4 TileColour = GetSpriteTileColour( TileIndex, SpriteUv, CharacterSet );
+	float4 TileColour = GetSpriteTileColour( TileIndex, SpriteUv );
 
 	if ( RenderEdge )
 		return float4(1,0,1,1);
