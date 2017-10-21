@@ -95,9 +95,14 @@
 				
 				float Tileu = fmod( Renderxf, 1 );
 				float Tilev = 1 - fmod( Renderyf, 1 );
+				float2 Tileuv = float2(Tileu,Tilev);
 
-				float4 Colour = GetTileColour( RenderIndex + TileOffset, float2(Tileu,Tilev), CharacterPage );
-				return Colour;
+				float4 Colour = GetTileColour( RenderIndex + TileOffset, Tileuv, CharacterPage );
+
+				float4 TransparentColour = float4( Tileuv, 0, 1 );
+				BlendAlphaColour( TransparentColour, Colour );
+
+				return TransparentColour;
 			}
 			ENDCG
 		}

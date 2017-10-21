@@ -149,35 +149,13 @@
                 Colour.xyz = lerp( Colour, TileColour, BlendAmount );
 			}
 
-			float Range(float Value,float Min,float Max)
-			{
-				return (Value-Min) / (Max-Min);
-			}
-
-			float2 Range2(float2 Value,float2 Min,float2 Max)
-			{
-				float x = Range( Value.x, Min.x, Max.x );
-				float y = Range( Value.y, Min.y, Max.y );
-				return float2( x, y );
-			}
 
 			float2 GetRectUv(float2 Position,float2 RectPos,float2 RectSize)
 			{
 				return Range2( Position, RectPos, RectPos + RectSize );
 			}
 
-			bool IsInside01(float Value)
-			{
-				return (Value>=0) && (Value<1);
-			}
 
-			void BlendAlphaColour(inout float4 Colour,float4 NewColour)
-			{
-				float OldAlpha = Colour.w;
-				float Alpha = NewColour.w;
-				Colour = ( Colour * (1-Alpha) ) + ( NewColour * Alpha );
-				Colour.w = max( OldAlpha, Alpha );
-			}
 		
 			void GetSpriteLayerColours(int2 xy,inout float4 Colours[4])
 			{
@@ -234,17 +212,11 @@
 				SpriteLayerColours[3] = float4(0,0,1,0);
 				GetSpriteLayerColours( xy, SpriteLayerColours );
 
-				GetBackgroundColour( BackgroundOrder[3], xy, Colour );
-				BlendAlphaColour( Colour, SpriteLayerColours[3] );
-
-				GetBackgroundColour( BackgroundOrder[2], xy, Colour );
-				BlendAlphaColour( Colour, SpriteLayerColours[2] );
-
-				GetBackgroundColour( BackgroundOrder[1], xy, Colour );
-				BlendAlphaColour( Colour, SpriteLayerColours[1] );
-
-				GetBackgroundColour( BackgroundOrder[0], xy, Colour );
-				BlendAlphaColour( Colour, SpriteLayerColours[0] );
+				for ( int Layer=3;	Layer>=0;	Layer-- )
+				{
+					GetBackgroundColour( BackgroundOrder[Layer], xy, Colour );
+					BlendAlphaColour( Colour, SpriteLayerColours[Layer] );
+				}
 
 				Colour.w = 1;
 

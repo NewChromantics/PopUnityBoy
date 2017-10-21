@@ -79,8 +79,12 @@
 				int4 Sprite = GetSprite( RenderIndex );
 
 				float4 Colour = GetSpriteColour( Sprite, SpriteUv );
-			
-				return Colour;
+
+				float4 TransparentColour = float4( SpriteUv, 0, 1 );
+				BlendAlphaColour( TransparentColour, Colour );
+				TransparentColour.w = 1;
+
+				return TransparentColour;
 			}
 			ENDCG
 		}

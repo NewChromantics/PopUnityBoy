@@ -223,8 +223,9 @@ float4 GetTileColour(int TileIndex,float2 Tileuv,int CharacterSet)
 	//return float4( PaletteIndex / 256.0f, 0, 0, 1);
 	//int pal = tex2D( VRamTexture, i.uv ).r * 256;
 	float4 rgba = GetPalette15Colour( PaletteIndex );
-	return float4( rgba.xyz,1 );
+	return rgba;
 }
+
 
 
 int4 GetSprite(int SpriteIndex)
@@ -435,5 +436,29 @@ float4 GetSpriteColour(int4 Sprite,float2 SpriteUv)
 	TileColour = lerp( TileColour, EdgeColour, RenderEdge );
 
 	return TileColour;
+}
+
+float Range(float Value,float Min,float Max)
+{
+	return (Value-Min) / (Max-Min);
+}
+
+float2 Range2(float2 Value,float2 Min,float2 Max)
+{
+	float x = Range( Value.x, Min.x, Max.x );
+	float y = Range( Value.y, Min.y, Max.y );
+	return float2( x, y );
+}
+bool IsInside01(float Value)
+{
+	return (Value>=0) && (Value<1);
+}
+
+void BlendAlphaColour(inout float4 Colour,float4 NewColour)
+{
+	float OldAlpha = Colour.w;
+	float Alpha = NewColour.w;
+	Colour = ( Colour * (1-Alpha) ) + ( NewColour * Alpha );
+	Colour.w = max( OldAlpha, Alpha );
 }
 
