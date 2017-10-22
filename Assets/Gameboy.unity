@@ -503,7 +503,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Bios: {fileID: 4900000, guid: b6713cb53b2ef43e7a3050e52b2d6fe0, type: 3}
-  Rom: {fileID: 4900000, guid: 32c7088698a834c608b35ed84640fbc4, type: 3}
+  Rom: {fileID: 4900000, guid: 8ae9128ee5fe9435ab5cd2e087712f4d, type: 3}
   EnableCpuRenderer: 0
   FrameTarget: {fileID: 0}
   FrameRenderer: {fileID: 2100000, guid: 93f86a1f20bd741b1889986ec78b10ff, type: 2}
@@ -522,7 +522,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6504.978, Culture=neutral,
+    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6504.40675, Culture=neutral,
       PublicKeyToken=null
   Flip: 1
   ForceOpaque: 1
@@ -554,7 +554,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6504.978, Culture=neutral,
+    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6504.40675, Culture=neutral,
       PublicKeyToken=null
   OnVRamTextureUpdated:
     m_PersistentCalls:
@@ -581,7 +581,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6504.978, Culture=neutral,
+    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6504.40675, Culture=neutral,
       PublicKeyToken=null
   OnIoRamTextureUpdated:
     m_PersistentCalls:
@@ -608,7 +608,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6504.978, Culture=neutral,
+    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6504.40675, Culture=neutral,
       PublicKeyToken=null
   OnOamRamTextureUpdated:
     m_PersistentCalls:
@@ -635,7 +635,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6504.978, Culture=neutral,
+    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6504.40675, Culture=neutral,
       PublicKeyToken=null
   DebugPalette: 0
   DebugPaletteRed: 31
@@ -650,6 +650,31 @@ MonoBehaviour:
   InputActionR: Jump
   InputActionStart: Submit
   InputActionSelect: Cancel
+  MemoryPokes:
+  - Region: 234881024
+    Address: 0
+    Value: 1
+  - Region: 234881024
+    Address: 1
+    Value: 1
+  - Region: 234881024
+    Address: 2
+    Value: 1
+  - Region: 234881024
+    Address: 3
+    Value: 1
+  - Region: 234881024
+    Address: 4
+    Value: 1
+  - Region: 234881024
+    Address: 5
+    Value: 1
+  - Region: 234881024
+    Address: 6
+    Value: 1
+  - Region: 234881024
+    Address: 7
+    Value: 1
 --- !u!4 &476232141
 Transform:
   m_ObjectHideFlags: 0

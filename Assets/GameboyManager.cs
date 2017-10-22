@@ -8,6 +8,22 @@ using UnityEngine.Events;
 public class UnityEvent_Texture : UnityEvent <Texture> {}
 
 
+
+
+[System.Serializable]
+public class TPoke
+{
+	[System.Serializable]
+	public enum MemoryRegion
+	{
+		Sram = 0x0E000000,
+	};
+
+	public MemoryRegion	Region = MemoryRegion.Sram;
+	public int			Address;
+	public byte			Value;
+};
+
 public class GameboyManager : MonoBehaviour {
 
 	const int GbaScreenWidth = 240;
@@ -74,6 +90,8 @@ public class GameboyManager : MonoBehaviour {
 	public string				InputActionStart = "Submit";
 	public string				InputActionSelect = "Cancel";
 
+	public List<TPoke>			MemoryPokes;
+
 	void Start ()
 	{
 		if ( FrameTarget != null )
@@ -99,6 +117,15 @@ public class GameboyManager : MonoBehaviour {
 
 		GbaManager.StartEmulator ( Renderer );
 		GbaManager.LoadRom (RomBytes);
+
+		if (MemoryPokes != null) {
+			foreach (var Poke in MemoryPokes) {
+				//	write to memory
+				var Address = Poke.Region + Poke.Address;
+				Memory.WriteU8 ( (uint)Address, Poke.Value);
+			}
+		}
+
 		GbaManager.Resume ();
 	}
 
