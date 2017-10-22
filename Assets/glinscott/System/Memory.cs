@@ -223,16 +223,17 @@
 
         public Memory()
         {
+			//	http://problemkaputt.de/gbatek.htm#gbamemorymap
             this.ReadU8Funcs = new ReadU8Delegate[]
                 {
                     this.ReadBiosRam8,
                     this.ReadNop8,
-                    this.ReadEwRam8,
-                    this.ReadIwRam8,
+					this.ReadEwRam8,	//	onboard WRAM 02000000
+                    this.ReadIwRam8,	//	onchip ram
                     this.ReadIO8,
-                    this.ReadPalRam8,
-                    this.ReadVRam8,
-                    this.ReadOamRam8,
+					this.ReadPalRam8,	//	05000000
+					this.ReadVRam8,		//	06000000
+					this.ReadOamRam8,	//	07000000
                     this.ReadNop8,
                     this.ReadNop8,
                     this.ReadNop8,
