@@ -260,7 +260,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 125202020}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 339, y: 329.5, z: 0}
+  m_LocalPosition: {x: 477, y: 328.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 253666462}
@@ -319,7 +319,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 189846703}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 84.75, y: 0, z: 0}
+  m_LocalPosition: {x: 119.25, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 825195140}
@@ -385,7 +385,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 253666461}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 164.75, z: 0}
+  m_LocalPosition: {x: 0, y: 164.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1292906837}
@@ -446,11 +446,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 456290875}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1de785c1d6f724c579a28ce4226ef101, type: 3}
+  m_Script: {fileID: 11500000, guid: 52d0470b266b3421b9250e1ba25d9822, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   MaterialOwnerInChildren: 0
-  MaterialOwnerIsParent: 0
   materialOwner: {fileID: 0}
   _material: {fileID: 0}
   UseSharedMaterial: 1
@@ -461,7 +460,6 @@ MonoBehaviour:
   InitialValue_Float: 0
   InitialValue_Int: 0
   InitialValue_Colour: {r: 1, g: 1, b: 1, a: 1}
-  InitialValue_Texture: {fileID: 0}
 --- !u!4 &456290877
 Transform:
   m_ObjectHideFlags: 0
@@ -505,45 +503,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Bios: {fileID: 4900000, guid: b6713cb53b2ef43e7a3050e52b2d6fe0, type: 3}
   Rom: {fileID: 4900000, guid: 8ae9128ee5fe9435ab5cd2e087712f4d, type: 3}
-  EnableCpuRenderer: 0
-  FrameTarget: {fileID: 0}
-  FrameRenderer: {fileID: 2100000, guid: 93f86a1f20bd741b1889986ec78b10ff, type: 2}
-  BlitFrameInCoRoutine: 1
-  OnTextureUpdated:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6506.40427, Culture=neutral,
-      PublicKeyToken=null
-  Flip: 1
-  ForceOpaque: 1
   TimeScalar: 10
-  WritePixelsPerThread: 13981
-  PixelCountClip: 38400
-  OnPaletteTextureUpdated:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6506.40427, Culture=neutral,
-      PublicKeyToken=null
-  OnVRamTextureUpdated:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6506.40427, Culture=neutral,
-      PublicKeyToken=null
-  OnIoRamTextureUpdated:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6506.40427, Culture=neutral,
-      PublicKeyToken=null
-  OnOamRamTextureUpdated:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6506.40427, Culture=neutral,
-      PublicKeyToken=null
-  DebugPalette: 0
-  DebugPaletteRed: 31
-  DebugPaletteGreen: 31
-  DebugPaletteBlue: 0
-  DebugPaletteAlpha: 0
   InputAxisHorizontal: Horizontal
   InputAxisVertical: Vertical
   InputActionA: Fire1
@@ -618,7 +578,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6506.40427, Culture=neutral,
+    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6506.41263, Culture=neutral,
       PublicKeyToken=null
   OnPaletteTextureUpdated:
     m_PersistentCalls:
@@ -645,7 +605,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6506.40427, Culture=neutral,
+    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6506.41263, Culture=neutral,
       PublicKeyToken=null
   OnVRamTextureUpdated:
     m_PersistentCalls:
@@ -672,7 +632,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6506.40427, Culture=neutral,
+    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6506.41263, Culture=neutral,
       PublicKeyToken=null
   OnIoRamTextureUpdated:
     m_PersistentCalls:
@@ -699,7 +659,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6506.40427, Culture=neutral,
+    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6506.41263, Culture=neutral,
       PublicKeyToken=null
   OnOamRamTextureUpdated:
     m_PersistentCalls:
@@ -726,7 +686,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6506.40427, Culture=neutral,
+    m_TypeName: UnityEvent_Texture, Assembly-CSharp, Version=1.0.6506.41263, Culture=neutral,
       PublicKeyToken=null
 --- !u!1 &589136417
 GameObject:
@@ -752,11 +712,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 589136417}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1de785c1d6f724c579a28ce4226ef101, type: 3}
+  m_Script: {fileID: 11500000, guid: 52d0470b266b3421b9250e1ba25d9822, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   MaterialOwnerInChildren: 0
-  MaterialOwnerIsParent: 0
   materialOwner: {fileID: 0}
   _material: {fileID: 0}
   UseSharedMaterial: 1
@@ -767,7 +726,6 @@ MonoBehaviour:
   InitialValue_Float: 0
   InitialValue_Int: 0
   InitialValue_Colour: {r: 1, g: 1, b: 1, a: 1}
-  InitialValue_Texture: {fileID: 0}
 --- !u!4 &589136419
 Transform:
   m_ObjectHideFlags: 0
@@ -805,7 +763,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 631731302}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 226, y: 0, z: 0}
+  m_LocalPosition: {x: 318, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 253666462}
@@ -872,7 +830,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 770608410}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -254.25, y: 0, z: 0}
+  m_LocalPosition: {x: -357.75, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 825195140}
@@ -1026,7 +984,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 825195139}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -164.75, z: 0}
+  m_LocalPosition: {x: 0, y: -164.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 770608411}
@@ -1087,7 +1045,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 888270810}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 254.25, y: 0, z: 0}
+  m_LocalPosition: {x: 357.75, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 825195140}
@@ -1167,11 +1125,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1034830328}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1de785c1d6f724c579a28ce4226ef101, type: 3}
+  m_Script: {fileID: 11500000, guid: 52d0470b266b3421b9250e1ba25d9822, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   MaterialOwnerInChildren: 0
-  MaterialOwnerIsParent: 0
   materialOwner: {fileID: 0}
   _material: {fileID: 0}
   UseSharedMaterial: 1
@@ -1182,7 +1139,6 @@ MonoBehaviour:
   InitialValue_Float: 0
   InitialValue_Int: 0
   InitialValue_Colour: {r: 1, g: 1, b: 1, a: 1}
-  InitialValue_Texture: {fileID: 0}
 --- !u!1 &1234617925
 GameObject:
   m_ObjectHideFlags: 0
@@ -1269,7 +1225,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1292906836}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -226, y: 0, z: 0}
+  m_LocalPosition: {x: -318, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 253666462}
@@ -1403,7 +1359,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1670888345}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -84.75, y: 0, z: 0}
+  m_LocalPosition: {x: -119.25, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 825195140}
@@ -1537,11 +1493,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1878829882}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1de785c1d6f724c579a28ce4226ef101, type: 3}
+  m_Script: {fileID: 11500000, guid: 52d0470b266b3421b9250e1ba25d9822, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   MaterialOwnerInChildren: 0
-  MaterialOwnerIsParent: 0
   materialOwner: {fileID: 0}
   _material: {fileID: 0}
   UseSharedMaterial: 1
@@ -1552,7 +1507,6 @@ MonoBehaviour:
   InitialValue_Float: 0
   InitialValue_Int: 0
   InitialValue_Colour: {r: 1, g: 1, b: 1, a: 1}
-  InitialValue_Texture: {fileID: 0}
 --- !u!4 &1878829884
 Transform:
   m_ObjectHideFlags: 0

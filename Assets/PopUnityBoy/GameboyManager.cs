@@ -8,10 +8,6 @@ using UnityEngine.Events;
 using UnityEditor;
 #endif
 
-[System.Serializable]
-public class UnityEvent_Texture : UnityEvent <Texture> {}
-
-
 
 [System.Serializable]
 public class TPoke
